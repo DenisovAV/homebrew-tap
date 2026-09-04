@@ -28,14 +28,25 @@ jobs:
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@master
 
+      # `brew audit [path]` is disabled -- it takes a name, and a name only
+      # exists inside a tap. Linking the checkout into place tests *this*
+      # commit rather than whatever is on the remote, which matters for pull
+      # requests.
+      - name: Link the checkout in as the tap
+        run: |
+          taps="$(brew --repository)/Library/Taps/denisovav"
+          mkdir -p "$taps"
+          ln -s "$GITHUB_WORKSPACE" "$taps/homebrew-tap"
+          brew tap | grep denisovav
+
       - name: Audit
-        run: brew audit --strict --formula ./Formula/litetune.rb
+        run: brew audit --strict denisovav/tap/litetune
 
       - name: Build from source
-        run: brew install --build-from-source --verbose ./Formula/litetune.rb
+        run: brew install --build-from-source --verbose denisovav/tap/litetune
 
       - name: Test
-        run: brew test --verbose ./Formula/litetune.rb
+        run: brew test --verbose denisovav/tap/litetune
 
       # The formula's own test asserts --version and the exit code; this
       # asserts the thing a user actually types first.
