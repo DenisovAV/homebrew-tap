@@ -1,0 +1,45 @@
+# Builds and tests the formula on a clean runner.
+#
+# The machine this was written on could not: its Command Line Tools were too
+# old for Homebrew to build from source, so `brew install` failed on the
+# environment and said nothing about the formula. An untested formula that
+# looks fine is exactly the thing this project refuses to ship elsewhere.
+name: test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  # Formulae rot without being touched: the sdist stays put, but Homebrew's
+  # default python moves, and litetune pins python@3.12 for a reason.
+  schedule:
+    - cron: "0 6 * * 1"
+
+jobs:
+  formula:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Audit
+        run: brew audit --strict --formula ./Formula/litetune.rb
+
+      - name: Build from source
+        run: brew install --build-from-source --verbose ./Formula/litetune.rb
+
+      - name: Test
+        run: brew test --verbose ./Formula/litetune.rb
+
+      # The formula's own test asserts --version and the exit code; this
+      # asserts the thing a user actually types first.
+      - name: It runs
+        run: |
+          litetune --version
+          litetune --help | head -3
