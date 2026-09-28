@@ -3,8 +3,8 @@ class Litetune < Formula
 
   desc "Fine-tune, convert and verify small models for on-device"
   homepage "https://github.com/DenisovAV/litetune"
-  url "https://files.pythonhosted.org/packages/ef/7c/058c71fc45297b93a8c24340f17911b8d2b5a4ac2d60e8804dc4a434fbae/litetune-0.1.9.tar.gz"
-  sha256 "fcfa605b17ffd60222298fa2ebe5fd3b6812767e019bb121f571e399d00c3a55"
+  url "https://files.pythonhosted.org/packages/68/8f/ce1d8207a2eb3e35cc84d0a90c06aabfe69859d7d4eed3a6d42fa56a1d97/litetune-0.2.0.tar.gz"
+  sha256 "abd5f907234e18c604b45a85fd0947440e34b78a175a05a91a453f0217d72d68"
   license "Apache-2.0"
 
   # `numpy==2.0.2`, pinned by the stage environments litetune provisions,
