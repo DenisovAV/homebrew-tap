@@ -42,18 +42,18 @@ jobs:
       - name: Audit
         run: brew audit --strict denisovav/tap/litetune
 
-      # The macOS runner image ships openssl@1.1, which owns
-      # /opt/homebrew/bin/openssl. When an openssl@3 revision lands without a
-      # matching runner image, python@3.12 upgrades it as a dependency, its
-      # `brew link` cannot take bin/openssl, and `brew install` exits 1 after
-      # installing litetune -- reported only as an annotation. Nothing here uses
-      # openssl@1.1.
-      - name: Unlink the runner's openssl@1.1
+      # The macOS runner image carries openssl@1.1 links, among them
+      # /opt/homebrew/bin/openssl. Since openssl@3 3.6.4_1 (2026-09-28) the
+      # openssl@3 upgraded as python@3.12's dependency cannot link bin/openssl,
+      # and `brew install` exits 1 after installing litetune, saying why only
+      # in an annotation. `brew unlink openssl@1.1` removed 0 symlinks there, so
+      # the links are removed directly. Nothing here uses openssl@1.1.
+      - name: Remove the runner's openssl@1.1 links
         if: runner.os == 'macOS'
         run: |
-          if brew list --formula openssl@1.1 >/dev/null 2>&1; then
-            brew unlink openssl@1.1
-          fi
+          prefix="$(brew --prefix)"
+          find "$prefix/bin" "$prefix/include" "$prefix/lib" "$prefix/share" "$prefix/etc" \
+            -type l -lname '*openssl@1.1*' -print -delete 2>/dev/null || true
 
       - name: Build from source
         run: brew install --build-from-source --verbose denisovav/tap/litetune
