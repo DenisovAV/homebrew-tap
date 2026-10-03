@@ -3,14 +3,15 @@ class Litetune < Formula
 
   desc "Fine-tune, convert and verify small models for on-device"
   homepage "https://github.com/DenisovAV/litetune"
-  url "https://files.pythonhosted.org/packages/27/31/67167e41ec4e15669d016df67f884f12f1e9c691d24eb608c13b11bece3f/litetune-0.2.1.tar.gz"
-  sha256 "f89bbe14a8552b552f67b6c85229a822a489d1f753cac690509d881a1d056677"
+  url "https://files.pythonhosted.org/packages/4d/56/1681fbe4cd0e9570080c2478a87162c7f3c7b0a1142aa500db4a32a27226/litetune-0.3.0.tar.gz"
+  sha256 "fe8be3f0ab8f5fcb7321f197454175f4aabf8e80647a4821bf08ae93ad3a9f0e"
   license "Apache-2.0"
 
   # `numpy==2.0.2`, pinned by the stage environments litetune provisions,
   # publishes wheels up to cp312. Homebrew's newest python would put `convert`
   # and `verify` out of reach on a fresh install, which is the opposite of what
   # packaging this is for.
+  depends_on "libyaml"
   depends_on "python@3.12"
 
   resource "pyyaml" do
